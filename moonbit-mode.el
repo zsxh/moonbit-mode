@@ -143,6 +143,20 @@ e.g. `Int' in `type UserId Int'."
       parent-bol tab-width)
      ((parent-is "multiline_string_literal") parent-bol 0))))
 
+(defvar moonbit--treesit-thing-settings
+  `((moonbit
+     (list ,(regexp-opt '("block_expression" "nonempty_block_expression"
+                          "parenthesized_expression" "array_expression"
+                          "map_expression" "parenthesized_type" "type_arguments"
+                          "type_parameters" "arguments")))
+     (sexp (not ,(rx (or "{" "}" "[" "]" "(" ")" ","))))
+     (defun (or "function_definition" "impl_definition"))
+     (comment "comment")
+     (string ,(regexp-opt '("char_literal" "byte_literal" "bytes_literal"
+                            "string_literal" "multiline_string_literal"
+                            "string_fragment" "multiline_string_fragment")))
+     (text (or comment string)))))
+
 (defun moonbit--treesit-defun-name (node)
   "Return the defun name of NODE.
 Return nil if there is no name or if NODE is not a defun node."
@@ -151,7 +165,7 @@ Return nil if there is no name or if NODE is not a defun node."
 
 (defun moonbit-mode--ts-setup ()
   "Setup treesit."
-  (treesit-parser-create 'moonbit)
+  (setq treesit-primary-parser (treesit-parser-create 'moonbit))
   ;; Fontification
   (setq-local treesit-font-lock-feature-list
               '(( comment literal string 
@@ -164,6 +178,8 @@ Return nil if there is no name or if NODE is not a defun node."
   (setq-local treesit-defun-type-regexp
               (rx (or "function_definition" "anonymous_lambda_expression"
                       "named_lambda_expression")))
+  (when (boundp 'treesit-thing-settings) ;; Emacs 30+
+    (setq-local treesit-thing-settings moonbit--treesit-thing-settings))
   ;; Imenu
   (setq-local treesit-defun-name-function #'moonbit--treesit-defun-name)
   (setq-local treesit-simple-imenu-settings
@@ -179,6 +195,7 @@ Return nil if there is no name or if NODE is not a defun node."
   (when (treesit-ready-p 'moonbit)
     (moonbit-mode--ts-setup)))
 
+;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.mbt\\'" . moonbit-mode))
 
 (provide 'moonbit-mode)
