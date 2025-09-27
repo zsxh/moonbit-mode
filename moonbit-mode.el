@@ -166,6 +166,8 @@ Return nil if there is no name or if NODE is not a defun node."
 (defun moonbit-mode--ts-setup ()
   "Setup treesit."
   (setq treesit-primary-parser (treesit-parser-create 'moonbit))
+  ;; Comments
+  (c-ts-common-comment-setup)
   ;; Fontification
   (setq-local treesit-font-lock-feature-list
               '(( comment literal string 
