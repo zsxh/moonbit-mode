@@ -25,6 +25,17 @@
 
 ;;; Code:
 
+(require 'treesit)
+(require 'c-ts-common)
+(eval-when-compile (require 'rx))
+(treesit-declare-unavailable-functions)
+
+(add-to-list
+ 'treesit-language-source-alist
+ '(moonbit "https://github.com/moonbitlang/tree-sitter-moonbit.git"
+           :commit "0a9622038b00e2122a0e5414f4fd927dd7b3bd5f")
+ t)
+
 (defgroup moonbit nil
   "Customization variables for MoonBit mode."
   :tag "MoonBit"
