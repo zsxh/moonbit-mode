@@ -33,7 +33,7 @@
 (add-to-list
  'treesit-language-source-alist
  '(moonbit "https://github.com/moonbitlang/tree-sitter-moonbit.git"
-           :commit "0a9622038b00e2122a0e5414f4fd927dd7b3bd5f")
+           :commit "a5a7e0b9cb2db740cfcc4232b2f16493b42a0c82")
  t)
 
 (defgroup moonbit nil
